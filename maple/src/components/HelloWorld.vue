@@ -1,58 +1,61 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <main>
+    <div>
+      <input type="text" v-model="nickName" @keyup.enter="searchInfo">
+      <button @click="searchInfo">search</button>
+    </div>
+  </main>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+  data: () => ({
+    nickName: '',
+  }),
+  methods: {
+    searchInfo: function () {
+      // const headers = {
+      //   'x-nxopen-api-key': 'test_99c9ccd90bcabd0adda2a298ee3a34b554b161560510a7c43d80ffded1737b6ec992ce9ee48acd724627223fa2b6d1c5',
+      // }
+      const baseURL = axios.create({
+        baseURL: 'https://open.api.nexon.com'
+      });
+      baseURL.get('/maplestory/v1/id', {
+          params: { character_name: this.nickName },
+          headers: {
+            'x-nxopen-api-key': 'test_99c9ccd90bcabd0adda2a298ee3a34b554b161560510a7c43d80ffded1737b6ec992ce9ee48acd724627223fa2b6d1c5',
+          },
+        }).then((result) => {
+          if (result.status === 200) {
+            baseURL.get('/maplestory/v1/character/basic', {
+              params: {
+                ocid: result.data.ocid,
+                date: '2024-04-01',
+              },
+              headers: {
+                'x-nxopen-api-key': 'test_99c9ccd90bcabd0adda2a298ee3a34b554b161560510a7c43d80ffded1737b6ec992ce9ee48acd724627223fa2b6d1c5',
+              },
+            })
+            .then((result) => {
+              console.log(result);
+            })
+            . catch((error) => {
+              console.log(error);
+            })
+          }
+        }).catch((error) => {
+          console.log(error);
+        })
+
+      // this.axios.get('/maplestory/v1/id', {character_name: this.nickName}, {headers})
+      // .then((result) => {
+      //   console.log(result);
+      // }).catch((error) => {
+      //   console.log(error);
+      // })
+    },
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
