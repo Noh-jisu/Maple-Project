@@ -1,5 +1,38 @@
-.test {
-  .input-test {
-    border: 1px solid red;
+.global-navbar {
+  border: 1px solid;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  // width: calc(100% - 58px);
+  width: calc(100% - 42px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  li {
+    list-style: none;
   }
+  .all-menu {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 0;
+    li {
+      margin-right: 10px;
+      &:last-child {
+        margin: 0;
+      }
+    }
+  }
+  .search-info {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+  }
+}
+.content-section {
+  margin-top: 60px;
+  border: 1px solid;
 }
