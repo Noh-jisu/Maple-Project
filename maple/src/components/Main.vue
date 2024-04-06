@@ -1,48 +1,48 @@
 <template>
   <main>
     <!-- s.GNB -->
-    <section>
+    <section class="gnb-section">
       <ul class="global-navbar">
         <li>
-          <ul class="all-menu">
-            <!-- 랭킹은 캐릭터정보에 통합 -->
-            <li>
-              <button>캐릭터 정보</button>
-            </li>
-            <li>
-              <button>유니온 정보</button>
-            </li>
-            <li>
-              <button>길드 정보</button>
-            </li>
-            <li>
-              <button>확률 정보</button>
-            </li>
-          </ul>
+          페이지 이름
         </li>
         <li class="search-info">
-          <select v-model="searchType">
-            <option value="userInfo">캐릭터 정보</option>
-            <option value="unionInfo">유니온 정보</option>
-            <option value="guildInfo">길드 정보</option>
-          </select>
-          <input type="text" :placeholder="selectSearchType" v-model="searchKeyword" @keyup.enter="checkSearchType">
-          <button @click="checkSearchType">검색</button>
+          <div class="input-box">
+            <input type="text" placeholder="캐릭터명 또는 닉네임" v-model="searchKeyword" @keyup.enter="checkSearchType">
+          </div>
         </li>
       </ul>
     </section>
     <!-- e.GNB -->
-    <!-- s.content -->
-    <section class="content-section">
-      <!-- <p>{{ this.userInfo }}</p> -->
+    <!-- s.character info -->
+    <section class="character-info-section">
       <dl>
-        <dt>캐릭터 명</dt>
-        <dd>{{this.userInfo.character_name}}</dd>
+        <dt>캐릭터 이미지</dt>
+        <dd>
+          <h2>짧은안꼬</h2>
+          <ul>
+            <li>Lv 282</li>
+            <li>아델</li>
+            <li>인기도 53</li>
+          </ul>
+          <p>전투력 1억 1883만 4329</p>
+        </dd>
       </dl>
     </section>
-    <!-- e.content -->
-    <!-- <input class="input-test" type="text" v-model="nickName" @keyup.enter="searchInfo">
-    <button @click="searchInfo">search</button> -->
+    <!-- e.character info -->
+    <!-- s.info-detatil -->
+    <section class="info-detatil-section">
+      <div class="detail-cont">
+        <ul>
+          <li>스탯</li>
+          <li>장비</li>
+          <li>스킬</li>
+          <li>유니온</li>
+          <li>캐시</li>
+        </ul>
+      </div>
+    </section>
+    <!-- e.info-detatil -->
   </main>
 </template>
 
@@ -58,23 +58,6 @@ export default {
     searchType: 'userInfo',
     userInfo: {},
   }),
-  computed: {
-    selectSearchType: function () {
-      let placeholderType = '';
-      switch (this.searchType) {
-        case 'userInfo' : 
-          placeholderType = '캐릭터 닉네임을 입력해주세요.';
-          break;
-        case 'unionInfo':
-          placeholderType = '유니온을 조회할 캐릭터의 닉네임을 입력해주세요.';
-          break;
-        case 'guildInfo':
-          placeholderType = '길드명을 입력해주세요.';
-          break;
-      }
-      return placeholderType;
-    },
-  },
   methods: {
     // 조회조건 구분
     checkSearchType: function () {
