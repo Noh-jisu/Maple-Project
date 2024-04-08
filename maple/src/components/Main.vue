@@ -9,6 +9,7 @@
         <li class="search-info">
           <div class="input-box">
             <input type="text" placeholder="캐릭터명 또는 닉네임" v-model="searchKeyword" @keyup.enter="checkSearchType">
+            <i class="search-icon"></i>
           </div>
         </li>
       </ul>
@@ -17,12 +18,14 @@
     <!-- s.character info -->
     <section class="character-info-section">
       <dl>
-        <dt>캐릭터 이미지</dt>
+        <dt>
+          <img :src="userInfo.character_image" alt="캐릭터이미지">
+        </dt>
         <dd>
-          <h2>짧은안꼬</h2>
+          <h2>{{ userInfo.character_name }} / {{ userInfo.world_name }}</h2>
           <ul>
-            <li>Lv 282</li>
-            <li>아델</li>
+            <li>Lv {{ userInfo.character_level }}</li>
+            <li>{{ userInfo.character_class }}</li>
             <li>인기도 53</li>
           </ul>
           <p>전투력 1억 1883만 4329</p>
@@ -63,10 +66,7 @@ export default {
     checkSearchType: function () {
       if (this.searchType === 'userInfo') {
         this.searchInfo();
-      } else if (this.searchType === 'unionInfo') {
-        // 임시
-        console.log('유니온 검색');
-      } else if (this.searchType === 'guildInfo') {
+      }  else if (this.searchType === 'guildInfo') {
         // 임시
         console.log('길드 검색');
       }
@@ -85,13 +85,6 @@ export default {
         }).catch((error) => {
           console.log(error);
         })
-
-      // this.axios.get('/maplestory/v1/id', {character_name: this.nickName}, {headers})
-      // .then((result) => {
-      //   console.log(result);
-      // }).catch((error) => {
-      //   console.log(error);
-      // })
     },
     userBaseInfo: function ( val ) {
       this.axios.get('/maplestory/v1/character/basic', {
@@ -104,7 +97,6 @@ export default {
         },
       })
       .then((result) => {
-        console.log(result);
         this.userInfo = result.data;
       })
       . catch((error) => {
