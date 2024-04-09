@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main style="overflow-x: hidden">
     <!-- s.GNB -->
     <section class="gnb-section">
       <ul class="global-navbar">
@@ -26,7 +26,7 @@
           <ul>
             <li>Lv {{ userInfo.character_level }}</li>
             <li>{{ userInfo.character_class }}</li>
-            <li>인기도 53</li>
+            <li>인기도 {{ userInfo.popularity }}</li>
           </ul>
           <p>전투력 1억 1883만 4329</p>
         </dd>
@@ -37,11 +37,11 @@
     <section class="info-detatil-section">
       <div class="detail-cont">
         <ul>
-          <li>스탯</li>
-          <li>장비</li>
-          <li>스킬</li>
-          <li>유니온</li>
-          <li>캐시</li>
+          <li :class="{'focus-tab': currentTab === 1}" @click=changeTab(1)>스탯</li>
+          <li :class="{'focus-tab': currentTab === 2}" @click=changeTab(2)>장비</li>
+          <li :class="{'focus-tab': currentTab === 3}" @click=changeTab(3)>스킬</li>
+          <li :class="{'focus-tab': currentTab === 4}" @click=changeTab(4)>유니온</li>
+          <li :class="{'focus-tab': currentTab === 5}" @click=changeTab(5)>캐시</li>
         </ul>
       </div>
     </section>
@@ -50,16 +50,21 @@
 </template>
 
 <script>
+import SearchParam from '@/resources/entity/SearchParam';
 
 export default {
   data: () => ({
-    apiKey: 'test_99c9ccd90bcabd0adda2a298ee3a34b554b161560510a7c43d80ffded1737b6ec992ce9ee48acd724627223fa2b6d1c5',
+    searchParam: {
+      class: new SearchParam(),
+      data: {},
+    },
     nickName: '',
 
     // -------------------------
     searchKeyword: '',
     searchType: 'userInfo',
     userInfo: {},
+    currentTab: 1,
   }),
   methods: {
     // 조회조건 구분
@@ -71,13 +76,12 @@ export default {
         console.log('길드 검색');
       }
     },
+    // 캐릭터 식별자 조회
     searchInfo: function () {
-      // 캐릭터 식별자 조회
+      this.searchParam.class.character_name = this.searchKeyword;
       this.axios.get('/maplestory/v1/id', {
-          params: { character_name: this.searchKeyword },
-          headers: {
-            'x-nxopen-api-key': this.apiKey,
-          },
+          params: { character_name: this.searchParam.class.character_name },
+          headers: this.searchParam.class.getApiKey(),
         }).then((result) => {
           if (result.status === 200) {
             this.userBaseInfo(result.data.ocid);
@@ -87,21 +91,35 @@ export default {
         })
     },
     userBaseInfo: function ( val ) {
+      this.searchParam.class.ocid = val;
+      this.searchParam.class.date = '2024-04-08';
       this.axios.get('/maplestory/v1/character/basic', {
-        params: {
-          ocid: val,
-          date: '2024-04-01',
-        },
-        headers: {
-          'x-nxopen-api-key': this.apiKey,
-        },
+        params: this.searchParam.class.characterBaseInfoParam(),
+        headers: this.searchParam.class.getApiKey(),
       })
       .then((result) => {
         this.userInfo = result.data;
+        this.userPopularInfo();
       })
-      . catch((error) => {
+      .catch((error) => {
         console.log(error);
       });
+    },
+    userPopularInfo: function () {
+      this.axios.get('/maplestory/v1/character/popularity', {
+        params: this.searchParam.class.characterBaseInfoParam(),
+        headers: this.searchParam.class.getApiKey(),
+      })
+      .then((result) => {
+        this.userInfo.popularity = result.data.popularity;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+    changeTab: function (val = 1) {
+      this.currentTab = val;
+      console.log(val);
     },
   }
 }

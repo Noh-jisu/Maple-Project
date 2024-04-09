@@ -84,7 +84,6 @@
       }
     }
     dd {
-      border: 1px solid blue;
       h2 {
         font-size: 18px;
         font-weight: 700;
@@ -132,13 +131,27 @@
   justify-content: center;
   .detail-cont {
     width: 1080px;
-    border: 1px solid;
     ul {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin: 0;
+      padding: 0;
+      width: 100%;
       li {
+        cursor: pointer;
         list-style: none;
+        border-radius: 8px 8px 0 0 ;
+        width: 180px;
+        text-align: center;
+        padding: 10px 16px;
+        color: #222325;
+        background-color: #c6c9cf;
+        font-weight: 600;
+      }
+      .focus-tab {
+        background-color: #007aff;
+        color: #fff;
       }
     }
   }
